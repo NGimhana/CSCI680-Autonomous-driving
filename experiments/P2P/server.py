@@ -5,20 +5,21 @@ import threading
 FILE_SIZE = 5000000
 
 def handle_send(client_socket):
-    file_path = input("Enter the file path: ")
-    try:
-        file_name = os.path.basename(file_path)
-        client_socket.send(file_name.encode())  # Send the file name
-        with open(file_path, 'rb') as file:
-            data = file.read(FILE_SIZE)
-            while data:
-                client_socket.send(data)
+        file_path = input("Enter the file path: ")
+        try:
+            file_name = os.path.basename(file_path)
+            client_socket.send(file_name.encode())  # Send the file name
+            with open(file_path, 'rb') as file:
                 data = file.read(FILE_SIZE)
-        print("File sent.")        
-    except FileNotFoundError:
-        print(f"File not found: {file_path}")
-
-    client_socket.close()
+                while data:
+                    client_socket.send(data)
+                    data = file.read(FILE_SIZE)
+            print("File sent.") 
+                  
+        except FileNotFoundError:
+            print(f"File not found: {file_path}")
+        client_socket.close() 
+    
 
 def handle_receive(client_socket):
     received_data = b""
@@ -38,7 +39,7 @@ def handle_receive(client_socket):
 
 def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(('127.0.0.1', 12353))  # Change the port as needed
+    server_socket.bind(('128.239.113.31', 12363))  # Change the port as needed
     server_socket.listen(5)
     print("Server started. Listening on port 12348.")
 
@@ -48,9 +49,10 @@ def start_server():
         ## get the file path from the console
 
         send_handler = threading.Thread(target=handle_send, args=(client_socket,))
-        send_handler.start()
+        send_handler.start()   
         
 
 if __name__ == "__main__":
     start_server()
+    
     
